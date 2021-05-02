@@ -45,8 +45,8 @@ void Cluster::add_point_indicator(int n)
 
 //void Cluster::add_point_indicator(int n) { number_points_in_cluster++; point_indicators.push_back(n); }
 
-void Cluster::assign_point_indicator(int id, int n)
-{
+void Cluster::assign_point_indicator(int id, int n) 
+{ 
     if (point_indicators[id] == 1 && n == 0) number_points_in_cluster--;
     if (point_indicators[id] == 0 && n == 1) number_points_in_cluster++;
     point_indicators[id] = n;

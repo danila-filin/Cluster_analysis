@@ -9,10 +9,14 @@ private:
     Vector cluster_center;
     double radius, diameter;
 public:
+    //конструкторы и деструктор
     Cluster();
     Cluster(const Cluster& c);
     ~Cluster() = default;
-    const Cluster& operator=(const Cluster& c);
+
+    const Cluster& operator=(const Cluster& c);//операция присваивания
+
+    //функции, связанные с атрибутами данного класса
     int get_number_points_in_cluster();
     int get_cluster_id();
     int get_point_indicator(int id);
@@ -22,7 +26,11 @@ public:
     void assign_cluster_id(int id);
     void add_point_indicator(int n);
     void assign_point_indicator(int id, int n);
-    void print_cluster(ofstream& file, vector <Vector>& points);
+
+    void print_cluster(ofstream& file, vector <Vector>& points);//печать кластера
+
+    //поиск центра, радиуса и диаметра кластера
     void find_cluster_center(vector <Vector>& points);
     void find_radius_and_diameter(vector <Vector>& points);
 };
+
