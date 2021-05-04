@@ -58,7 +58,8 @@ void Field::delete_cloud_from_field(int id)
 
 void Field::print_field()
 {
-    ofstream f("Field with clouds.txt"), g("Field with clouds.plt");
+    ofstream f("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field with clouds.txt"),
+        g("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field with clouds.plt");
 
     for (int i = 0; i < number_clouds_in_field; i++) clouds_in_field[i].print_cloud(f);
     g << "set size square\n" << "set palette\n" << "plot 'Field with clouds.txt' palette\n";
@@ -113,8 +114,10 @@ void Field::compression_all_clouds_in_buffer(double lambda) { buffer.compression
 
 void Field::creat_field_histogram(int number_of_columns)
 {
-    ofstream f_x("Field histogram for first coordinate.txt"), f_y("Field histogram for second coordinate.txt");
-    ofstream g_x("Field histogram for first coordinate.plt"), g_y("Field histogram for second coordinate.plt");
+    ofstream f_x("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field histogram for first coordinate.txt"), 
+        f_y("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field histogram for second coordinate.txt");
+    ofstream g_x("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field histogram for first coordinate.plt"), 
+        g_y("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//Field histogram for second coordinate.plt");
     double min_x, max_x, min_y, max_y, d_x, d_y;
     int i, j, k;
     vector <int> hist_x(number_of_columns, 0);
@@ -200,7 +203,6 @@ void Field::wave(double delta)
     find_clusters[number_find_clusters_in_field - 1].assign_delta(delta);
     find_clusters[number_find_clusters_in_field - 1].assign_alg_number(c);
     find_clusters[number_find_clusters_in_field - 1].print_wave_algorithm(points);
-    cout << "Wave" << endl;
 }
 
 void Field::dbscan(double delta, int k)
@@ -227,7 +229,6 @@ void Field::dbscan(double delta, int k)
     find_clusters[number_find_clusters_in_field - 1].assign_k(k);
     find_clusters[number_find_clusters_in_field - 1].assign_alg_number(c);
     find_clusters[number_find_clusters_in_field - 1].print_dbscan_algorithm(points, cpd);
-    cout << "DBSCAN" << endl;
 }
 
 void Field::k_m(int k)
@@ -251,7 +252,6 @@ void Field::k_m(int k)
     find_clusters[number_find_clusters_in_field - 1].assign_k(k);
     find_clusters[number_find_clusters_in_field - 1].assign_alg_number(c);
     find_clusters[number_find_clusters_in_field - 1].print_k_means_algorithm(points);
-    cout << "k means" << endl;
 }
 
 void Field::em(int k)
@@ -275,7 +275,6 @@ void Field::em(int k)
     find_clusters[number_find_clusters_in_field - 1].assign_k(k);
     find_clusters[number_find_clusters_in_field - 1].assign_alg_number(c);
     find_clusters[number_find_clusters_in_field - 1].print_em_algorithm(points);
-    cout << "EM" << endl;
 }
 
 void Field::tree()
@@ -290,7 +289,6 @@ void Field::tree()
     }
     edges = T.creat_spanning_tree(points);
     T.print_spanning_tree(points, edges);
-    cout << "Spanning tree" << endl;
 }
 
 void Field::hierarchy()
@@ -303,5 +301,4 @@ void Field::hierarchy()
         for (int j = 0; j < clouds_in_field[i].get_number_points_in_cloud(); j++) points.push_back(clouds_in_field[i].get_point_in_cloud(j));
     }
     h.hierarchy(points);
-    cout << "Hierarchy" << endl;
 }
