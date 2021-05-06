@@ -54,3 +54,5 @@ void Controller::em(int k) { analysis_state = true; field.em(k); }
 void Controller::tree() { analysis_state = true; field.tree(); }
 
 void Controller::hierarchy() { analysis_state = true; field.hierarchy(); }
+
+void Controller::generate_delaunay_trinagulation() { field.generate_delaunay_trinagulation(); }

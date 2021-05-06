@@ -8,6 +8,7 @@
 #include "EM.h"
 #include "Spanning_tree.h"
 #include "Hierarchical_algorithm.h"
+#include "Delaunay_triangulation.h"
 
 class Field
 {
@@ -16,6 +17,7 @@ private:
     vector <Cloud> clouds_in_field;
     Buffer buffer;
     vector <Find_cluster> find_clusters;
+    Delaunay_triangulation triangulation;
 public:
     //конструкторы и деструктор
     Field();
@@ -62,5 +64,10 @@ public:
     void k_m(int k);
     void em(int k);
     void hierarchy();
-};
 
+    void find_min_y(vector <Vector>& points);
+    void polar_angle_sort(vector <Vector>& points);
+    double left_rotate(Vector p, Vector q, Vector r);
+    vector <Vector> convex_hull(vector <Vector> points);
+    void generate_delaunay_trinagulation();
+};

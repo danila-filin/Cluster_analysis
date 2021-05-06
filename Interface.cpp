@@ -374,6 +374,28 @@ void Interface::reading_commands()
             log_file << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
             check_command = true;
         }
+        if (com == "DELAUNAY" || com == "delaunay")
+        {
+            cout << "Entered command: " << com << "." << endl;
+            log_file << "Entered command: " << com << "." << endl;
+            if (args.size() == 0)
+            {
+                cout << "Generate Delaunay triangulation." << endl;
+                log_file << "Generate Delaunay triangulation." << endl;
+                t_1 = clock();
+                cout << "Please wait." << endl;
+                controller.generate_delaunay_trinagulation();
+                t_2 = clock();
+                cout << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+                log_file << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+            }
+            if (args.size() > 0)
+            {
+                cout << "Incorrect data entered.\n\n";
+                log_file << "Incorrect data entered.\n\n";
+            }
+            check_command = true;
+        }
         if (check_command == false) log_file << "Entered command that could not be recognized.\n\n";
     }
     command_file.close();
