@@ -367,32 +367,63 @@ void Interface::reading_commands()
         }
         if (com == "HIERARCHY" || com == "hierarchy")
         {
-            log_file << "Starting the hierarchical algorithm";
-            t_1 = clock();
-            controller.hierarchy();
-            t_2 = clock();
-            log_file << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
-            check_command = true;
-        }
-        if (com == "DELAUNAY" || com == "delaunay")
-        {
             cout << "Entered command: " << com << "." << endl;
             log_file << "Entered command: " << com << "." << endl;
             if (args.size() == 0)
             {
-                cout << "Generate Delaunay triangulation." << endl;
-                log_file << "Generate Delaunay triangulation." << endl;
-                t_1 = clock();
+                cout << "Starting the hierarchical algorithm." << endl;
+                log_file << "Starting the hierarchical algorithm.";
                 cout << "Please wait." << endl;
-                controller.generate_delaunay_trinagulation();
+                t_1 = clock();
+                controller.hierarchy();
                 t_2 = clock();
-                cout << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
-                log_file << " -- successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+                cout << "Successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+                log_file << "Successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
             }
             if (args.size() > 0)
             {
                 cout << "Incorrect data entered.\n\n";
                 log_file << "Incorrect data entered.\n\n";
+            }
+            check_command = true;
+        }
+        //if (com == "DELAUNAY" || com == "delaunay")
+        //{
+        //    cout << "Entered command: " << com << "." << endl;
+        //    log_file << "Entered command: " << com << "." << endl;
+        //    if (args.size() == 0)
+        //    {
+        //        cout << "Generate Delaunay triangulation." << endl;
+        //        log_file << "Generate Delaunay triangulation." << endl;
+        //        t_1 = clock();
+        //        cout << "Please wait." << endl;
+        //        controller.generate_delaunay_trinagulation();
+        //        t_2 = clock();
+        //        cout << "Successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+        //        log_file << "Successfully.\nTime: " << (t_2 - t_1) / CLOCKS_PER_SEC << ".\n\n";
+        //    }
+        //    if (args.size() > 0)
+        //    {
+        //        cout << "Incorrect data entered.\n\n";
+        //        log_file << "Incorrect data entered.\n\n";
+        //    }
+        //    check_command = true;
+        //}
+        if (com == "INTERPOLATION" || com == "interpolation")
+        {
+            cout << "Entered command: " << com << "." << endl;
+            log_file << "Entered command: " << com << "." << endl;
+            if (args.size() < 2 || args.size() > 2)
+            {
+                cout << "Incorrect data entered.\n\n";
+                log_file << "Incorrect data entered.\n\n";
+            }
+            if (args.size() == 2)
+            {
+                cout << "Please wait." << endl;
+                controller.function_interpolation(Vector(stod(args[0]), stod(args[1])));
+                cout << "Function intrepolation in point (" << args[0] << ", " << args[1] << ") -- successfuly.\n\n";
+                log_file << "Function intrepolation in point (" << args[0] << ", " << args[1] << ") -- successfuly.\n\n";
             }
             check_command = true;
         }

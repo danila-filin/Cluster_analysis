@@ -23,5 +23,6 @@ public:
 	void assign_C(Vector c);
 	void assign_id(int k);
 	void assing_neighbouring_triangle_id(int k);
+	void print_triangle(ofstream& file);
 };
 

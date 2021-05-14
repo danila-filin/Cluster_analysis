@@ -70,32 +70,61 @@ vector <Vector> Delaunay_triangulation::find_neighbouring_points(Vector p)
 		if (triangles[i].get_A().get_vector_id() == p.get_vector_id())
 		{
 			k = i;
-			break;
+			if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+			if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+			if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+			for (j = 0; j < number_triangles; j++)
+			{
+				if (triangle_indicators[k][j] == 1 && j != k)
+				{
+					if (triangles[j].get_A().get_vector_id() == p.get_vector_id() || triangles[j].get_B().get_vector_id() == p.get_vector_id() ||
+						triangles[j].get_C().get_vector_id() == p.get_vector_id())
+					{
+						if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+						if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+						if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+					}
+				}
+			}
 		}
 		if (triangles[i].get_B().get_vector_id() == p.get_vector_id())
 		{
 			k = i;
-			break;
+			if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+			if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+			if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+			for (j = 0; j < number_triangles; j++)
+			{
+				if (triangle_indicators[k][j] == 1 && j != k)
+				{
+					if (triangles[j].get_A().get_vector_id() == p.get_vector_id() || triangles[j].get_B().get_vector_id() == p.get_vector_id() ||
+						triangles[j].get_C().get_vector_id() == p.get_vector_id())
+					{
+						if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+						if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+						if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+					}
+				}
+			}
 		}
 		if (triangles[i].get_C().get_vector_id() == p.get_vector_id())
 		{
 			k = i;
-			break;
-		}
-	}
-	if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
-	if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
-	if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
-	for (i = 0; i < number_triangles; i++)
-	{
-		if (triangle_indicators[k][i] == 1 && i!=k)
-		{
-			if (triangles[i].get_A().get_vector_id() == p.get_vector_id() || triangles[i].get_B().get_vector_id() == p.get_vector_id() ||
-				triangles[i].get_C().get_vector_id() == p.get_vector_id())
+			if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+			if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+			if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+			for (j = 0; j < number_triangles; j++)
 			{
-				neighbouring_points.push_back(triangles[i].get_A());
-				neighbouring_points.push_back(triangles[i].get_B());
-				neighbouring_points.push_back(triangles[i].get_C());
+				if (triangle_indicators[k][j] == 1 && j != k)
+				{
+					if (triangles[j].get_A().get_vector_id() == p.get_vector_id() || triangles[j].get_B().get_vector_id() == p.get_vector_id() ||
+						triangles[j].get_C().get_vector_id() == p.get_vector_id())
+					{
+						if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+						if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+						if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+					}
+				}
 			}
 		}
 	}
@@ -105,9 +134,34 @@ vector <Vector> Delaunay_triangulation::find_neighbouring_points(Vector p)
 		{
 			if (neighbouring_points[i].get_vector_id() == neighbouring_points[j].get_vector_id())
 			{
-				for (k = j; k < neighbouring_points.size()-1; k++) neighbouring_points[k] = neighbouring_points[k + 1];
+				neighbouring_points.erase(neighbouring_points.begin() + j);
+//				for (k = j; k < neighbouring_points.size()-1; k++) neighbouring_points[k] = neighbouring_points[k + 1];
 			}
 		}
 	}
 	return neighbouring_points;
+}
+
+void Delaunay_triangulation::print_Delaunay_triangulation()
+{
+	ofstream f("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Function interpolation//Delaunay triangulation.txt"), 
+		g("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Function interpolation//Delaunay triangulation.plt");
+	g << "set size square\n" << "plot 'Delaunay triangulation.txt' with linespoints\n";
+	for (int i = 0; i < number_triangles; i++)
+	{
+		triangles[i].print_triangle(f);
+		f << "\n\n";
+	}
+	f.close();
+	g.close();
+}
+
+void Delaunay_triangulation::print(int n)
+{
+
+}
+
+void Delaunay_triangulation::print_gif(int n)
+{
+
 }

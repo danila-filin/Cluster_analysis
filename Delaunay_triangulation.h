@@ -17,5 +17,8 @@ public:
     int find_triangle(Vector p, Vector q);
     void create_triangle_indicators();
     vector <Vector> find_neighbouring_points(Vector p);
+    void print_Delaunay_triangulation();
+    void print(int n);
+    void print_gif(int n);
 };
 

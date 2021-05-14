@@ -9,6 +9,10 @@
 #include "Spanning_tree.h"
 #include "Hierarchical_algorithm.h"
 #include "Delaunay_triangulation.h"
+#pragma warning (disable:4244)
+#pragma warning (disable:26451)
+#pragma warning (disable:6001)
+#pragma warning (disable:4018)
 
 class Field
 {
@@ -17,7 +21,6 @@ private:
     vector <Cloud> clouds_in_field;
     Buffer buffer;
     vector <Find_cluster> find_clusters;
-    Delaunay_triangulation triangulation;
 public:
     //конструкторы и деструктор
     Field();
@@ -69,5 +72,7 @@ public:
     void polar_angle_sort(vector <Vector>& points);
     double left_rotate(Vector p, Vector q, Vector r);
     vector <Vector> convex_hull(vector <Vector> points);
-    void generate_delaunay_trinagulation();
+    Delaunay_triangulation generate_delaunay_trinagulation(vector <Vector>& points);
+    double Gauss_function(double x);
+    void function_interpolation(Vector p);
 };
