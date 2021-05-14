@@ -7,6 +7,7 @@ Delaunay_triangulation::Delaunay_triangulation(const Delaunay_triangulation& Del
 	triangles = Del_tr.triangles;
 	number_triangles = Del_tr.number_triangles;
 	number_points = Del_tr.number_points;
+	triangle_indicators = Del_tr.triangle_indicators;
 }
 
 const Delaunay_triangulation& Delaunay_triangulation::operator=(const Delaunay_triangulation& Del_tr)
@@ -14,6 +15,7 @@ const Delaunay_triangulation& Delaunay_triangulation::operator=(const Delaunay_t
 	triangles = Del_tr.triangles;
 	number_triangles = Del_tr.number_triangles;
 	number_points = Del_tr.number_points;
+	triangle_indicators = Del_tr.triangle_indicators;
 	return *this;
 }
 
@@ -23,4 +25,89 @@ void Delaunay_triangulation::add_triangle(Triangle T)
 	triangles.push_back(T);
 	number_triangles++;
 	number_points = number_points + 3;
+}
+
+Triangle Delaunay_triangulation::get_triangle(int id) { return triangles[id]; }
+
+int Delaunay_triangulation::find_triangle(Vector p, Vector q)
+{
+	for (int i = 0; i < number_triangles; i++)
+	{
+		Vector a = triangles[i].get_A(), b = triangles[i].get_B(), c = triangles[i].get_C();
+		//cout << "+ " << a.get_vector_id() << " " << b.get_vector_id() << " " << c.get_vector_id() << endl;
+		if (a.get_vector_id() == p.get_vector_id() && b.get_vector_id() == q.get_vector_id()) return i;
+		if (a.get_vector_id() == p.get_vector_id() && c.get_vector_id() == q.get_vector_id()) return i;
+		if (b.get_vector_id() == p.get_vector_id() && a.get_vector_id() == q.get_vector_id()) return i;
+		if (c.get_vector_id() == p.get_vector_id() && a.get_vector_id() == q.get_vector_id()) return i;
+		if (b.get_vector_id() == p.get_vector_id() && c.get_vector_id() == q.get_vector_id()) return i;
+		if (c.get_vector_id() == p.get_vector_id() && b.get_vector_id() == q.get_vector_id()) return i;
+	}
+	return -1;
+}
+
+void Delaunay_triangulation::create_triangle_indicators()
+{
+	triangle_indicators.resize(number_triangles);
+	for (int i = 0; i < number_triangles; i++) triangle_indicators[i].resize(number_triangles);
+	for (int i = 0; i < number_triangles; i++)
+	{
+		for (int j = 0; j < number_triangles; j++) triangle_indicators[i][j] = 0;
+	}
+	for (int i = 0; i < number_triangles; i++)
+	{
+		for (int j = 0; j < number_triangles; j++)
+			if (triangles[i].get_neighbouring_triangle_id() == j) triangle_indicators[i][j] = triangle_indicators[j][i] = 1;
+	}
+}
+
+vector <Vector> Delaunay_triangulation::find_neighbouring_points(Vector p)
+{
+	int i, j, k;
+	vector <Vector> neighbouring_points;
+
+	for (i = 0; i < number_triangles; i++)
+	{
+		if (triangles[i].get_A().get_vector_id() == p.get_vector_id())
+		{
+			k = i;
+			break;
+		}
+		if (triangles[i].get_B().get_vector_id() == p.get_vector_id())
+		{
+			k = i;
+			break;
+		}
+		if (triangles[i].get_C().get_vector_id() == p.get_vector_id())
+		{
+			k = i;
+			break;
+		}
+	}
+	if (triangles[k].get_A().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_A());
+	if (triangles[k].get_B().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_B());
+	if (triangles[k].get_C().get_vector_id() != p.get_vector_id()) neighbouring_points.push_back(triangles[k].get_C());
+	for (i = 0; i < number_triangles; i++)
+	{
+		if (triangle_indicators[k][i] == 1 && i!=k)
+		{
+			if (triangles[i].get_A().get_vector_id() == p.get_vector_id() || triangles[i].get_B().get_vector_id() == p.get_vector_id() ||
+				triangles[i].get_C().get_vector_id() == p.get_vector_id())
+			{
+				neighbouring_points.push_back(triangles[i].get_A());
+				neighbouring_points.push_back(triangles[i].get_B());
+				neighbouring_points.push_back(triangles[i].get_C());
+			}
+		}
+	}
+	for (i = 0; i < neighbouring_points.size(); i++)
+	{
+		for (j = i + 1; j < neighbouring_points.size(); j++)
+		{
+			if (neighbouring_points[i].get_vector_id() == neighbouring_points[j].get_vector_id())
+			{
+				for (k = j; k < neighbouring_points.size()-1; k++) neighbouring_points[k] = neighbouring_points[k + 1];
+			}
+		}
+	}
+	return neighbouring_points;
 }

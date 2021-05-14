@@ -302,3 +302,202 @@ void Field::hierarchy()
     }
     h.hierarchy(points);
 }
+
+void Field::find_min_y(vector <Vector>& points)
+{
+    int k = 0;
+    for (int i = 0; i < points.size(); i++)
+    {
+        if ((i != k && points[i].get_second_coordinate() < points[k].get_second_coordinate()) || 
+            (i != k && points[i].get_second_coordinate() == points[k].get_second_coordinate() && 
+                points[i].get_first_coordinate() < points[k].get_first_coordinate()))
+        {
+            k = i;
+        }
+    }
+    rotate(points.begin(), points.begin() + k, points.end());
+}
+
+void Field::polar_angle_sort(vector <Vector>& points)
+{
+    vector <double> angles;
+    Vector v;
+    double a;
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        if (i != 0)
+        {
+            if ((points[i] - points[0]).length() < 0.0001) angles.push_back(0);
+            else angles.push_back(acos((points[i] - points[0]).get_first_coordinate() / (points[i] - points[0]).length()));
+        }
+        else angles.push_back(0);
+    }
+    for (int i = 0; i < points.size() - 1; i++)
+    {
+        for (int j = 0; j < points.size() - 1 - i; j++)
+        {
+            if (angles[j] > angles[j + 1])
+            {
+                a = angles[j];
+                v = points[j];
+                angles[j] = angles[j + 1];
+                points[j] = points[j + 1];
+                angles[j + 1] = a;
+                points[j + 1] = v;
+            }
+        }
+    }
+}
+
+double Field::left_rotate(Vector p, Vector q, Vector r)
+{
+    Vector v = q - p, u = r - q;
+    return v.get_first_coordinate() * u.get_second_coordinate() - v.get_second_coordinate() * u.get_first_coordinate();
+}
+
+vector <Vector> Field::convex_hull(vector <Vector> points)
+{
+    vector <Vector> q;
+
+    if (points.size() < 3) return points;
+    find_min_y(points);
+    q.push_back(points[0]);
+    polar_angle_sort(points);
+    q.push_back(points[1]);
+    for (int i = 2; i < points.size(); i++)
+    {
+        while (left_rotate(q[q.size() - 2], q[q.size() - 1], points[i]) < 0 && q.size() > 1) q.pop_back();
+        q.push_back(points[i]);
+    }
+    q.push_back(points[0]);
+    return q;
+}
+
+Delaunay_triangulation Field::generate_delaunay_trinagulation(vector <Vector>& points)
+{
+    Delaunay_triangulation triangulation;
+    vector <Vector> vertices;
+    int i, j, k;
+    Vector a, b, c;
+    vector <int> ind(points.size(), 0);
+
+    for (i = 0; i < points.size() - 1; i++)
+    {
+        for (j = 0; j < points.size() - 1 - i; j++)
+        {
+            if (points[j].get_first_coordinate() > points[j + 1].get_first_coordinate())
+            {
+                a = points[j];
+                points[j] = points[j + 1];
+                points[j + 1] = a;
+            }
+        }
+    }
+a = points[0];
+b = points[1];
+c = points[2];
+triangulation.add_triangle(Triangle(a, b, c));
+ind[0] = ind[1] = ind[2] = 1;
+c = points[2];
+for (i = 3; i < points.size(); i++)
+{
+    vertices.clear();
+    for (j = 0; j < points.size(); j++)
+    {
+        if (ind[j] == 1) vertices.push_back(points[j]);
+    }
+    vertices = convex_hull(vertices);
+    for (j = 0; j < vertices.size(); j++)
+    {
+        if (vertices[j].get_first_coordinate() == c.get_first_coordinate() &&
+            vertices[j].get_second_coordinate() == c.get_second_coordinate()) k = j;
+    }
+    rotate(vertices.begin(), vertices.begin() + k, vertices.end());
+    vertices.push_back(vertices[0]);
+    a = c - points[i];
+    a.assign_vector_id(c.get_vector_id());
+    b = vertices[1] - points[i];
+    b.assign_vector_id(vertices[1].get_vector_id());
+    for (j = 2; j < vertices.size(); j++)
+    {
+        if (a.get_first_coordinate() * b.get_second_coordinate() - a.get_second_coordinate() * b.get_first_coordinate() < 0)
+        {
+            Vector p = a + points[i];
+            Vector q = b + points[i];
+            p.assign_vector_id(a.get_vector_id());
+            q.assign_vector_id(b.get_vector_id());
+            Triangle T = Triangle(points[i], p, q);
+            T.assing_neighbouring_triangle_id(triangulation.find_triangle(p, q));
+            //                cout << T.get_neighbouring_triangle_id() << " " << p.get_vector_id() << " " << q.get_vector_id() << endl;
+            triangulation.add_triangle(T);
+            ind[i] = 1;
+        }
+        if (a.get_first_coordinate() * b.get_second_coordinate() - a.get_second_coordinate() * b.get_first_coordinate() > 0) break;
+        a = b;
+        b = vertices[j] - points[i];
+        b.assign_vector_id(vertices[j].get_vector_id());
+    }
+    reverse(vertices.begin(), vertices.end());
+    a = c - points[i];
+    a.assign_vector_id(c.get_vector_id());
+    b = vertices[1] - points[i];
+    b.assign_vector_id(vertices[1].get_vector_id());
+    for (j = 2; j < vertices.size(); j++)
+    {
+        if (a.get_first_coordinate() * b.get_second_coordinate() - a.get_second_coordinate() * b.get_first_coordinate() > 0)
+        {
+            Vector p = a + points[i];
+            Vector q = b + points[i];
+            p.assign_vector_id(a.get_vector_id());
+            q.assign_vector_id(b.get_vector_id());
+            Triangle T = Triangle(points[i], p, q);
+            T.assing_neighbouring_triangle_id(triangulation.find_triangle(p, q));
+            //                cout << T.get_neighbouring_triangle_id() << " " << p.get_vector_id() << " " << q.get_vector_id() << endl;
+            triangulation.add_triangle(T);
+            ind[i] = 1;
+        }
+        if (a.get_first_coordinate() * b.get_second_coordinate() - a.get_second_coordinate() * b.get_first_coordinate() < 0) break;
+        a = b;
+        b = vertices[j] - points[i];
+        b.assign_vector_id(vertices[j].get_vector_id());
+    }
+    c = points[i];
+    //       Delaunay.print(i);
+    //       cout << i << endl;
+}
+//Delaunay.print_Delaunay_triangulation();
+//Delaunay.print_gif(number_points_in_field);
+return triangulation;
+}
+
+double Field::Gauss_function(double x) { return exp(-(x * x) / 2); }
+
+void Field::function_interpolation(Vector p)
+{
+    int i, j;
+    vector <Vector> points, neighbouring_points;
+    Delaunay_triangulation triangulation;
+    double h = 0.25, sum_w = 0, sum_w_y = 0;
+    vector <double> w;
+
+    points.push_back(p);
+    for (i = 0; i < number_clouds_in_field; i++)
+    {
+        for (j = 0; j < clouds_in_field[i].get_number_points_in_cloud(); j++) points.push_back(clouds_in_field[i].get_point_in_cloud(j));
+    }
+    triangulation = generate_delaunay_trinagulation(points);
+    triangulation.create_triangle_indicators();
+    neighbouring_points = triangulation.find_neighbouring_points(p);
+    for (i = 1; i < neighbouring_points.size(); i++)
+    {
+        w.push_back(Gauss_function((p - neighbouring_points[i]).length() / h));
+        cout << w[i - 1] << endl;
+    }
+    for (i = 1; i < neighbouring_points.size(); i++)
+    {
+        sum_w_y = sum_w_y + points[i].get_function_value() * w[i - 1];
+        sum_w = sum_w + w[i - 1];
+    }
+    cout << "Real: " << p.get_function_value() << ". Forecast: " << sum_w_y / sum_w << endl;
+}
