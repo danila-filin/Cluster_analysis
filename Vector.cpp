@@ -21,15 +21,6 @@ Vector::Vector(const Vector& v)
     vector_id = v.vector_id;
 }
 
-const Vector& Vector::operator=(const Vector& v)
-{
-    first_coordinate = v.first_coordinate;
-    second_coordinate = v.second_coordinate;
-    function_value = v.function_value;
-    vector_id = v.vector_id;
-    return *this;
-}
-
 Vector operator+(const Vector& v, const Vector& u)
 {
     return Vector(v.first_coordinate + u.first_coordinate, v.second_coordinate + u.second_coordinate);
@@ -48,6 +39,15 @@ Vector operator*(double lambda, const Vector& v)
 Vector operator*(const Vector& v, double lambda)
 {
     return Vector(lambda * v.first_coordinate, lambda * v.second_coordinate);
+}
+
+const Vector& Vector::operator=(const Vector& v)
+{
+    first_coordinate = v.first_coordinate;
+    second_coordinate = v.second_coordinate;
+    function_value = v.function_value;
+    vector_id = v.vector_id;
+    return *this;
 }
 
 double Vector::length() { return sqrt(first_coordinate * first_coordinate + second_coordinate * second_coordinate); }
