@@ -55,4 +55,4 @@ void Controller::tree() { analysis_state = true; field.tree(); }
 
 void Controller::hierarchy() { analysis_state = true; field.hierarchy(); }
 
-void Controller::generate_delaunay_trinagulation() { field.generate_delaunay_trinagulation(); }
+void Controller::function_interpolation(Vector p) { field.function_interpolation(p); }

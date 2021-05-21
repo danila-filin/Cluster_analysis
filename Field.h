@@ -56,7 +56,7 @@ public:
 
     //функция
     double fun(double x, double y);
-    void print_fun();
+    void print_fun(Vector p, double value);
 
     void add_find_cluster();
 

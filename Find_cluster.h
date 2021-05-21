@@ -33,6 +33,7 @@ public:
     int get_alg_number();
     double get_delta();
     int get_k();
+    Cluster get_cluster(int id);
 
     //печать результатов алгоритмов
     void print_wave_algorithm(vector <Vector>& points);

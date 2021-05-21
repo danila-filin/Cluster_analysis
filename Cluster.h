@@ -24,6 +24,7 @@ public:
     double get_radius();
     double get_diameter();
     void assign_cluster_id(int id);
+    void assign_cluster_center(Vector p);
     void add_point_indicator(int n);
     void assign_point_indicator(int id, int n);
 

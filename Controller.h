@@ -33,6 +33,6 @@ public:
     void em(int k);
     void tree();
     void hierarchy();
-    void generate_delaunay_trinagulation();
+    void function_interpolation(Vector p);
 };
 

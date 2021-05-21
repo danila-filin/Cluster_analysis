@@ -62,6 +62,8 @@ double Find_cluster::get_delta() { return delta; }
 
 int Find_cluster::get_k() { return k; }
 
+Cluster Find_cluster::get_cluster(int id) { return clusters[id]; }
+
 void Find_cluster::print_wave_algorithm(vector <Vector>& points)
 {
     string s_1 = to_string(alg_number), 

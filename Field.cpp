@@ -172,13 +172,22 @@ void Field::creat_cloud_histogram(int id, int number_of_colunms) { clouds_in_fie
 
 double Field::fun(double x, double y) { return (x * x - y * y) / 10 + 5; }
 
-void Field::print_fun()
+void Field::print_fun(Vector p, double value)
 {
     ofstream g("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Function interpolation//Function.plt");
+    ofstream f("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Function interpolation//Point.txt");
 
-    g << "reset\n" << "set terminal png size 640, 800\n" << "set output 'function.png'\n" << "set view 60, 30, 1, 1\n" << "set xyplane at -4.5\n";
-    g << "set key top center font 'times, 14'\n" << "set pm3d\n" << "set xlabel 'x'\n";
-    g << "set ylabel 'y'\n" << "set zlabel 'z'\n" << "splot (x*x-y*y)/10+10\n";
+    f << p.get_first_coordinate() << " " << p.get_second_coordinate() << " " << value;
+    f.close();
+    //g << "reset\n" << "set terminal png size 640, 800\n" << "set output 'function.png'\n" << "set view 60, 30, 1, 1\n" << "set xyplane at -4.5\n";
+    //g << "set key top center font 'times, 14'\n" << "set pm3d\n" << "set xlabel 'x'\n";
+    //g << "set ylabel 'y'\n" << "set zlabel 'z'\n" << "splot (x*x-y*y)/10+10\n"; 
+//    g << "splot [x=" << p.get_first_coordinate()-2 << ":" << p.get_first_coordinate()+2 <<"] [y=" << p.get_second_coordinate() - 2 << ":" << p.get_second_coordinate() + 2 << "] (x*x-y*y)/10+10\n";
+//    g << "set point " << p.get_first_coordinate() << "," << p.get_second_coordinate() << "," << value << " \n";
+    //g << "set arrow 1 from 0, 3, 1 to 0, 0, 1\n";
+    g << "splot (x*x-y*y)/10+5, 'Point.txt'\n";
+    g << "set arrow from " << p.get_first_coordinate() << "," << p.get_second_coordinate() << "," << 0 << " to " << p.get_first_coordinate() << "," << p.get_second_coordinate() << "," << value << "\n";
+//    g << "set point " << p.get_first_coordinate() << "," << p.get_second_coordinate() << "," << value << " \n";
     g.close();
 }
 
@@ -469,61 +478,75 @@ double Field::Gauss_function(double x) { return exp(-(x * x) / 2); }
 
 void Field::function_interpolation(Vector p)
 {
-    int i, j;
-    vector <Vector> points, neighbouring_points, points_1;
-    Delaunay_triangulation triangulation;
-    double h = 0.1, sum_w = 0, sum_w_y = 0, r, sum_y = 0, sum_eps = 0, mean_y = 0;
-    vector <double> w;
-    vector <double> eps;
+    Find_cluster F;
+    k_means alg;
+    vector <Vector> points, cluster, neighbouring_points, points_1;
+    int i, j, k;
+    double dist = 100, h = 0.1, sum_w = 0, sum_w_y = 0, r = 0, sum_y = 0, sum_eps = 0, mean_y = 0;
+    Delaunay_triangulation T;
+    vector <double> w, eps;
 
-    p.assign_vector_id(number_points_in_field + 1);
-    points.push_back(p);
     for (i = 0; i < number_clouds_in_field; i++)
     {
-        for (j = 0; j < clouds_in_field[i].get_number_points_in_cloud(); j++) points.push_back(clouds_in_field[i].get_point_in_cloud(j));
+        for (j = 0; j < clouds_in_field[i].get_number_points_in_cloud(); j++)
+            points.push_back(clouds_in_field[i].get_point_in_cloud(j));
     }
-    triangulation = generate_delaunay_trinagulation(points);
-    triangulation.print_Delaunay_triangulation();
-    triangulation.create_triangle_indicators();
-    neighbouring_points = triangulation.find_neighbouring_points(p);
-    for (i = 0; i < neighbouring_points.size(); i++) w.push_back(Gauss_function((p - neighbouring_points[i]).length() / h));
-    for (i = 0; i < neighbouring_points.size(); i++)
+    alg.assing_k(5);
+    F = alg.find_clusters(points);
+    F.print_k_means_algorithm(points);
+    for (i = 0; i < F.get_number_clusters_in_find_cluster(); i++)
     {
-        sum_w_y = sum_w_y + points[i].get_function_value() * w[i];
-        sum_w = sum_w + w[i];
-//        cout << neighbouring_points[i].get_first_coordinate() << " " << neighbouring_points[i].get_second_coordinate() << " " << neighbouring_points[i].get_vector_id() << endl;
+        if ((p - F.get_cluster(i).get_cluster_center()).length() < dist)
+        {
+            dist = (p - F.get_cluster(i).get_cluster_center()).length();
+            k = i;
+        }
     }
-
-    points.clear();
-    for (i = 0; i < number_clouds_in_field; i++)
+    if (dist == 10)
     {
-        for (j = 0; j < clouds_in_field[i].get_number_points_in_cloud(); j++) points.push_back(clouds_in_field[i].get_point_in_cloud(j));
+        cout << "Error. Points is too far away from the clusters.\n\n";
     }
-    for (i = 0; i < points.size(); i++) mean_y = mean_y + points[i].get_function_value();
-    mean_y = mean_y * (1 / points.size());
-    for (i = 0; i < points.size(); i++)
+    else
+    {
+        for (i = 0; i < number_points_in_field; i++)
+            if (F.get_cluster(k).get_point_indicator(i) == 1) cluster.push_back(points[i]);
+        cluster.push_back(p);
+        T = generate_delaunay_trinagulation(cluster);
+        T.create_triangle_indicators();
+        T.print_Delaunay_triangulation();
+        neighbouring_points = T.find_neighbouring_points(p);
+        for (i = 0; i < neighbouring_points.size(); i++) w.push_back(Gauss_function((p - neighbouring_points[i]).length() / h));
+        for (i = 0; i < neighbouring_points.size(); i++)
+        {
+            sum_w_y = sum_w_y + points[i].get_function_value() * w[i];
+            sum_w = sum_w + w[i];
+        }
+    }
+    cluster.pop_back();
+    for (i = 0; i < cluster.size(); i++) mean_y = mean_y + points[i].get_function_value();
+    mean_y = mean_y * (1 / cluster.size());
+    for (i = 0; i < cluster.size(); i++)
     {
         neighbouring_points.clear();
         w.clear();
         points_1.clear();
-        for (j = 0; j < i; j++) points_1.push_back(points[i]);
-        for (j = i + 1; j < points.size(); j++) points_1.push_back(points[i]);
-        triangulation = generate_delaunay_trinagulation(points_1);
-        triangulation.create_triangle_indicators();
-        neighbouring_points = triangulation.find_neighbouring_points(points[i]);
-        for (j = 0; j < neighbouring_points.size(); j++) w.push_back(Gauss_function((points[i] - neighbouring_points[i]).length() / h));
+        for (j = 0; j < i; j++) points_1.push_back(cluster[i]);
+        for (j = i + 1; j < points.size(); j++) points_1.push_back(cluster[i]);
+        T = generate_delaunay_trinagulation(points_1);
+        T.create_triangle_indicators();
+        neighbouring_points = T.find_neighbouring_points(points[i]);
+        for (j = 0; j < neighbouring_points.size(); j++) w.push_back(Gauss_function((cluster[i] - neighbouring_points[i]).length() / h));
         for (j = 0; j < neighbouring_points.size(); j++)
         {
             sum_w_y = sum_w_y + points_1[i].get_function_value() * w[i];
             sum_w = sum_w + w[i];
         }
-        eps.push_back(points[i].get_function_value() - sum_w_y / sum_w);
-        //cout << eps[i] << endl;
+        eps.push_back(cluster[i].get_function_value() - sum_w_y / sum_w);
     }
-    for (i = 0; i < points.size(); i++) 
-        sum_y = sum_y + ((points[i].get_function_value() - mean_y) * (points[i].get_function_value() - mean_y));
-    for (i = 0; i < points.size(); i++) sum_eps = sum_eps + eps[i] * eps[i];
+    for (i = 0; i < cluster.size(); i++) 
+        sum_y = sum_y + ((cluster[i].get_function_value() - mean_y) * (cluster[i].get_function_value() - mean_y));
+    for (i = 0; i < cluster.size(); i++) sum_eps = sum_eps + eps[i] * eps[i];
     r = 1 - sum_eps / sum_y;
-
     cout << "Real: " << p.get_function_value() << ". Forecast: " << sum_w_y / sum_w << ". r^2=" << r << "." << endl;
+    print_fun(p, sum_w_y / sum_w);
 }

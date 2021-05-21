@@ -84,6 +84,10 @@ Find_cluster k_means::find_clusters(vector <Vector>& points)
             }
         }
     }
-    for (i = 0; i < k; i++) f.add_cluster(P[i]);
+    for (i = 0; i < k; i++)
+    {
+        P[i].assign_cluster_center(k_means[i]);
+        f.add_cluster(P[i]);
+    }
     return f;
 }

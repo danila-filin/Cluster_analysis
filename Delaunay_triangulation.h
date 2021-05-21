@@ -14,6 +14,7 @@ public:
     ~Delaunay_triangulation() = default;
     void add_triangle(Triangle T);
     Triangle get_triangle(int id);
+    int get_number_triangles();
     int find_triangle(Vector p, Vector q);
     void create_triangle_indicators();
     vector <Vector> find_neighbouring_points(Vector p);

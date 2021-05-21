@@ -111,26 +111,31 @@ void Cloud::creat_cloud_histogram(int number_of_columns)
     ofstream f_x, f_y, g_x, g_y;
     int i, j;
     double max_x, min_x, d_x, max_y, min_y, d_y;
-    char f_s_x[500], g_s_x[500], f_s_y[500], g_s_y[500];
     vector <int> hist_x(number_of_columns, 0);
     vector <int> hist_y(number_of_columns, 0);
     Vector v = get_point_in_cloud(0);
-
-    sprintf_s(f_s_x, "%d", cloud_id);
-    strcat_s(f_s_x, "-th cloud histogram for first coordinate.txt");
-    sprintf_s(g_s_x, "%d", cloud_id);
-    strcat_s(g_s_x, "-th cloud histogram for first coordinate.plt");
-    f_x.open(f_s_x);
-    g_x.open(g_s_x);
-    g_x << "set style data histogram\n" << "set style fill solid\n" << "set yrange [0:]\n" << "set autoscale x\n" << "set autoscale y\n" << "set boxwidth 2\n" << "plot '" << f_s_x << "'";
-
-    sprintf_s(f_s_y, "%d", cloud_id);
-    strcat_s(f_s_y, "-th cloud histogram for second coordinate.txt");
-    sprintf_s(g_s_y, "%d", cloud_id);
-    strcat_s(g_s_y, "-th cloud histogram for second coordinate.plt");
-    f_y.open(f_s_y);
-    g_y.open(g_s_y);
-    g_y << "set style data histogram\n" << "set style fill solid\n" << "set yrange [0:]\n" << "set autoscale x\n" << "set autoscale y\n" << "set boxwidth 2\n" << "plot '" << f_s_y << "'";
+    string s_1 = to_string(cloud_id), 
+        s_2("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//"), 
+        s_3("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//"),
+        s_4("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//"),
+        s_5("C://Users//huawei//source//repos//Cluster Analysis//Cluster Analysis//Visualization//Field and histograms//");
+    s_2.append(s_1);
+    s_2.append("-th cloud histogram for first coordinate.txt");
+    s_3.append(s_1);
+    s_3.append("-th cloud histogram for first coordinate.plt");
+    s_4.append(s_1);
+    s_4.append("-th cloud histogram for second coordinate.txt");
+    s_5.append(s_1);
+    s_5.append("-th cloud histogram for second coordinate.plt");
+    
+    f_x.open(s_2);
+    g_x.open(s_3);
+    g_x << "set style data histogram\n" << "set style fill solid\n" << "set yrange [0:]\n" << "set autoscale x\n" << "set autoscale y\n" << "set boxwidth 2\n" 
+        << "plot '"<< s_1 << "-th cloud histogram for first coordinate.txt'\n";
+    f_y.open(s_4);
+    g_y.open(s_5);
+    g_y << "set style data histogram\n" << "set style fill solid\n" << "set yrange [0:]\n" << "set autoscale x\n" << "set autoscale y\n" << "set boxwidth 2\n" 
+        << "plot '" << s_1 << "-th cloud histogram for second coordinate.txt'\n";
 
     min_x = v.get_first_coordinate();
     max_x = v.get_first_coordinate();

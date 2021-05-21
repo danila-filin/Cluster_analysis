@@ -31,3 +31,10 @@ void Triangle::assign_C(Vector c) { C = c; }
 void Triangle::assign_id(int k) { id = k; }
 
 void Triangle::assing_neighbouring_triangle_id(int k) { neighbouring_triangle_id = k; }
+
+void Triangle::print_triangle(ofstream& file)
+{
+	A.print_vector(file);
+	B.print_vector(file);
+	C.print_vector(file);
+}

@@ -52,6 +52,8 @@ void Cluster::assign_point_indicator(int id, int n)
     point_indicators[id] = n;
 }
 
+void Cluster::assign_cluster_center(Vector p) { cluster_center = p; }
+
 void Cluster::print_cluster(ofstream& file, vector <Vector>& points)
 {
     for (int i = 0; i < point_indicators.size(); i++)
