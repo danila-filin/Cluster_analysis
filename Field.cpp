@@ -502,7 +502,7 @@ void Field::function_interpolation(Vector p)
             k = i;
         }
     }
-    if (dist == 10)
+    if (dist > 10)
     {
         cout << "Error. Points is too far away from the clusters.\n\n";
     }
@@ -521,32 +521,32 @@ void Field::function_interpolation(Vector p)
             sum_w_y = sum_w_y + points[i].get_function_value() * w[i];
             sum_w = sum_w + w[i];
         }
-    }
-    cluster.pop_back();
-    for (i = 0; i < cluster.size(); i++) mean_y = mean_y + points[i].get_function_value();
-    mean_y = mean_y * (1 / cluster.size());
-    for (i = 0; i < cluster.size(); i++)
-    {
-        neighbouring_points.clear();
-        w.clear();
-        points_1.clear();
-        for (j = 0; j < i; j++) points_1.push_back(cluster[i]);
-        for (j = i + 1; j < points.size(); j++) points_1.push_back(cluster[i]);
-        T = generate_delaunay_trinagulation(points_1);
-        T.create_triangle_indicators();
-        neighbouring_points = T.find_neighbouring_points(points[i]);
-        for (j = 0; j < neighbouring_points.size(); j++) w.push_back(Gauss_function((cluster[i] - neighbouring_points[i]).length() / h));
-        for (j = 0; j < neighbouring_points.size(); j++)
+        cluster.pop_back();
+        for (i = 0; i < cluster.size(); i++) mean_y = mean_y + points[i].get_function_value();
+        mean_y = mean_y * (1 / cluster.size());
+        for (i = 0; i < cluster.size(); i++)
         {
-            sum_w_y = sum_w_y + points_1[i].get_function_value() * w[i];
-            sum_w = sum_w + w[i];
+            neighbouring_points.clear();
+            w.clear();
+            points_1.clear();
+            for (j = 0; j < i; j++) points_1.push_back(cluster[i]);
+            for (j = i + 1; j < points.size(); j++) points_1.push_back(cluster[i]);
+            T = generate_delaunay_trinagulation(points_1);
+            T.create_triangle_indicators();
+            neighbouring_points = T.find_neighbouring_points(points[i]);
+            for (j = 0; j < neighbouring_points.size(); j++) w.push_back(Gauss_function((cluster[i] - neighbouring_points[i]).length() / h));
+            for (j = 0; j < neighbouring_points.size(); j++)
+            {
+                sum_w_y = sum_w_y + points_1[i].get_function_value() * w[i];
+                sum_w = sum_w + w[i];
+            }
+            eps.push_back(cluster[i].get_function_value() - sum_w_y / sum_w);
         }
-        eps.push_back(cluster[i].get_function_value() - sum_w_y / sum_w);
+        for (i = 0; i < cluster.size(); i++)
+            sum_y = sum_y + ((cluster[i].get_function_value() - mean_y) * (cluster[i].get_function_value() - mean_y));
+        for (i = 0; i < cluster.size(); i++) sum_eps = sum_eps + eps[i] * eps[i];
+        r = 1 - sum_eps / sum_y;
+        cout << "Real: " << p.get_function_value() << ". Forecast: " << sum_w_y / sum_w << ". r^2=" << r << "." << endl;
+        print_fun(p, sum_w_y / sum_w);
     }
-    for (i = 0; i < cluster.size(); i++) 
-        sum_y = sum_y + ((cluster[i].get_function_value() - mean_y) * (cluster[i].get_function_value() - mean_y));
-    for (i = 0; i < cluster.size(); i++) sum_eps = sum_eps + eps[i] * eps[i];
-    r = 1 - sum_eps / sum_y;
-    cout << "Real: " << p.get_function_value() << ". Forecast: " << sum_w_y / sum_w << ". r^2=" << r << "." << endl;
-    print_fun(p, sum_w_y / sum_w);
 }
