@@ -17,7 +17,7 @@ void Interface::reading_commands()
 
     time_start = clock();
     log_file << "Process started\n\n";
-    cout << "CLUSTER ANALYSIS\nLast modified: 03.05.2021\n" << endl;
+    cout << "CLUSTER ANALYSIS\nLast modified: 27.05.2021\n" << "Filin Danila\n" << endl;
     cout << "Enter name of command file (for example, file.txt): ";
     cin >> s;
     cout << "\n";
