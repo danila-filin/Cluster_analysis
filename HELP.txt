@@ -1,0 +1,32 @@
+Main commands:
+	HELP -- calling the HELP command;
+	INFO -- information about field; (to be done)
+	EXIT -- program exit.
+
+Field and histograms:
+	GENERATE_CLOUD mean_x mean_y sigma_x sigma_y n -- generating a cloud from n points with center in (mean x, mean y) and disperion (sigma x, sigma y);
+	PRINT_FIELD -- printing a field to a file;
+	FIELD_HISTOGRAM n -- creating a histograms of field with n columns;
+	CLOUD_HISTOGRAM m n -- creating a histogram of m-th cloud with n columns.
+
+Buffer:
+	BUFFER_ADD_CLOUD n -- add n-th cloud from field in buffer;
+	BUFFER_ADD_ALL_CLOUDS -- add all clouds from field in buffer;
+	BUFFER_UPLOAD_CLOUD n -- upload n-th cloud from the buffer in field;
+	BUFFER_UPLOAD_ALL_CLOUDS -- upload all clouds from the buffer in field;
+	BUFFER_SHIFT_CLOUD n v -- shift n-th cloud in buffer by vector v;
+        BUFFER_SHIFT_ALL_CLOUDS v -- shift all clouds in buffer by vector v;
+	BUFFER_TURN_CLOUD n phi -- turn n-th cloud in buffer at an angle phi;
+	BUFFER_TURN_ALL_CLOUDS phi -- turn all clouds in buffer at an angle phi;	
+	BUFFER_COMPRESSION_CLOUD n lambda -- compression n-th cloud in buffer;
+	BUFFER_COMPRESSION_ALL_CLOUDS lambda -- compression all clouds in buffer.
+
+Algorithms:
+	WAVE delta -- starting the wave algorithm with parameter delta;
+	DBSCAN delta k -- starting the DBscan algorithm with parameters delta and k;
+	SPANNING_TREE -- starting the spanning tree algorithm;
+	K_MEANS k -- starting the k means algorithm with parameter k;
+	EM k -- starting the EM algorithm with parameter k;
+	FOREL R -- starting the FOREL algorithm with parameter R;
+	HIERARCHY -- starting the hierarchical algorithm;
+	FACTORS -- find factors;
